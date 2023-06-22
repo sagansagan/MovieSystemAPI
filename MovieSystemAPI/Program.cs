@@ -41,7 +41,7 @@ namespace MovieSystemAPI
                 await context.Genres.ToListAsync());
 
             //hämtar alla genrer som är kopplade till en specifik person
-            app.MapGet("/Person/Genre/", async (string firstName, MovieDbContext context) =>
+            app.MapGet("/Person/Genre", async (string firstName, MovieDbContext context) =>
             {
                 var personGenres = from x in context.PersonGenres
                                    select new
@@ -55,7 +55,7 @@ namespace MovieSystemAPI
             .WithName("PersonIdGenre");
 
             //Hämtar alla filmer som är kopplade till en specifik person
-            app.MapGet("/Person/Movie/", async (string firstName, MovieDbContext context) =>
+            app.MapGet("/Person/Movie", async (string firstName, MovieDbContext context) =>
             {
                 var personMovies = from x in context.PersonGenres
                                    select new
@@ -107,7 +107,7 @@ namespace MovieSystemAPI
 
             //Koppla en person till en ny genre
 
-            app.MapPost("/Person/AddGenre/", async (MovieDbContext context, int personId, int genreId) =>
+            app.MapPost("/Person/AddGenre", async (MovieDbContext context, int personId, int genreId) =>
             {
                 var newGenre = new PersonGenre
                 {
@@ -120,7 +120,7 @@ namespace MovieSystemAPI
                 .WithName("PersonAddGenre");
 
             //Lägga in nya länkar/filmer för en specifik person och en specifik genre
-            app.MapPost("/Person/AddMovie/", async (MovieDbContext context, int personId, string movieName, int genreId) =>
+            app.MapPost("/Person/AddMovie", async (MovieDbContext context, int personId, string movieName, int genreId) =>
             {
                 var newMovie = new PersonGenre
                 {
@@ -137,7 +137,7 @@ namespace MovieSystemAPI
             //Få förslag på filmer i en viss genre från ett externt API, t.ex TMDB
 
 
-            app.MapGet("/Recommendations/", async (MovieDbContext context, string genreName) =>
+            app.MapGet("/Recommendations", async (MovieDbContext context, string genreName) =>
             {
                 var genre = await context.Genres.FirstOrDefaultAsync(g => g.Name == genreName);
                 //insert apikey here
