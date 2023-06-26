@@ -6,12 +6,12 @@
 
 URL path| Does...
 :-----:|:-----:
-`/Person`|Get all people
-`/Genres`|Get all genres
-`/Person/Genre`|Get all genres connected to a specific person
-`/Person/Movie`|Get all movies connected to a specific person
-`/Person/Ratings`|Get movieratings connected to a person
-`/Person/AddRating`|Add movierating connected to a person
-`/Person/AddGenre`|Connect a person to a genre
-`/Person/AddMovie`|Add a new movie for a specific person and genre
-`/Recommendations`|Get movie related to genre
+`/person`|Get all people
+`/genres`|Get all genres
+`/person/genre`|Get all genres connected to a specific person
+`/person/movie`|Get all movies connected to a specific person
+`/person/ratings`|Get movieratings connected to a person
+`/person/sdd-rating`|Add movierating connected to a person
+`/person/add-genre`|Connect a person to a genre
+`/person/add-movie`|Add a new movie for a specific person and genre
+`/recommendations`|Get movie related to genre
