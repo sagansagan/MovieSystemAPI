@@ -93,7 +93,7 @@ namespace MovieSystemAPI
             .WithName("PersonIdRatings");
 
             //Lägger in ratings på filmer kopplat till en person
-            app.MapPost("/person/addrating", async (MovieDbContext context, int rating, string movieName, int personId, int genreId) =>
+            app.MapPost("/person/add-rating", async (MovieDbContext context, int rating, string movieName, int personId, int genreId) =>
             {
 
                 var movie = await context.PersonGenres.FirstOrDefaultAsync(mv => mv.Movie == movieName);
@@ -116,7 +116,7 @@ namespace MovieSystemAPI
 
             //Koppla en person till en ny genre
 
-            app.MapPost("/person/addgenre", async (MovieDbContext context, int personId, int genreId) =>
+            app.MapPost("/person/add-genre", async (MovieDbContext context, int personId, int genreId) =>
             {
                 var newGenre = new PersonGenre
                 {
@@ -129,7 +129,7 @@ namespace MovieSystemAPI
                 .WithName("PersonAddGenre");
 
             //Lägga in nya länkar/filmer för en specifik person och en specifik genre
-            app.MapPost("/person/addmovie", async (MovieDbContext context, int personId, string movieName, int genreId) =>
+            app.MapPost("/person/add-movie", async (MovieDbContext context, int personId, string movieName, int genreId) =>
             {
                 var newMovie = new PersonGenre
                 {
