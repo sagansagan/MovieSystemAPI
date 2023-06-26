@@ -20,7 +20,14 @@ namespace MovieSystemAPI
             builder.Services.AddDbContext<MovieDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddCors(options => options.AddPolicy("MyPolicy", builder => 
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    }
+                )
+            );
             var app = builder.Build();
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -29,19 +36,21 @@ namespace MovieSystemAPI
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
+            app.UseAuthorization();
             
 
             //hämtar alla personer
-            app.MapGet("/Person", async (MovieDbContext context) =>
+            app.MapGet("/person", async (MovieDbContext context) =>
                 await context.Persons.ToListAsync());
 
             //hämtar alla genrer
-            app.MapGet("/Genre", async (MovieDbContext context) => 
+            app.MapGet("/genre", async (MovieDbContext context) => 
                 await context.Genres.ToListAsync());
 
             //hämtar alla genrer som är kopplade till en specifik person
-            app.MapGet("/Person/Genre", async (string firstName, MovieDbContext context) =>
+            app.MapGet("/person/genre", async (string firstName, MovieDbContext context) =>
             {
                 var personGenres = from x in context.PersonGenres
                                    select new
@@ -55,7 +64,7 @@ namespace MovieSystemAPI
             .WithName("PersonIdGenre");
 
             //Hämtar alla filmer som är kopplade till en specifik person
-            app.MapGet("/Person/Movie", async (string firstName, MovieDbContext context) =>
+            app.MapGet("/person/movie", async (string firstName, MovieDbContext context) =>
             {
                 var personMovies = from x in context.PersonGenres
                                    select new
@@ -69,7 +78,7 @@ namespace MovieSystemAPI
             .WithName("PersonIdMovie");
 
             //hämtar "rating" på filmer kopplat till en person
-            app.MapGet("/Person/Ratings", async (string firstName, MovieDbContext context) =>
+            app.MapGet("/person/ratings", async (string firstName, MovieDbContext context) =>
             {
                 var movieRating = from x in context.PersonGenres
                                   select new
@@ -84,7 +93,7 @@ namespace MovieSystemAPI
             .WithName("PersonIdRatings");
 
             //Lägger in ratings på filmer kopplat till en person
-            app.MapPost("/Person/AddRating", async (MovieDbContext context, int rating, string movieName, int personId, int genreId) =>
+            app.MapPost("/person/addrating", async (MovieDbContext context, int rating, string movieName, int personId, int genreId) =>
             {
 
                 var movie = await context.PersonGenres.FirstOrDefaultAsync(mv => mv.Movie == movieName);
@@ -99,7 +108,7 @@ namespace MovieSystemAPI
 
                 await context.SaveChangesAsync();
 
-                return Results.Created($"/Person/Ratings/", rating);
+                return Results.Created($"/person/ratings/", rating);
 
 
             })
@@ -107,7 +116,7 @@ namespace MovieSystemAPI
 
             //Koppla en person till en ny genre
 
-            app.MapPost("/Person/AddGenre", async (MovieDbContext context, int personId, int genreId) =>
+            app.MapPost("/person/addgenre", async (MovieDbContext context, int personId, int genreId) =>
             {
                 var newGenre = new PersonGenre
                 {
@@ -120,7 +129,7 @@ namespace MovieSystemAPI
                 .WithName("PersonAddGenre");
 
             //Lägga in nya länkar/filmer för en specifik person och en specifik genre
-            app.MapPost("/Person/AddMovie", async (MovieDbContext context, int personId, string movieName, int genreId) =>
+            app.MapPost("/person/addmovie", async (MovieDbContext context, int personId, string movieName, int genreId) =>
             {
                 var newMovie = new PersonGenre
                 {
@@ -137,7 +146,7 @@ namespace MovieSystemAPI
             //Få förslag på filmer i en viss genre från ett externt API, t.ex TMDB
 
 
-            app.MapGet("/Recommendations", async (MovieDbContext context, string genreName) =>
+            app.MapGet("/recommendations", async (MovieDbContext context, string genreName) =>
             {
                 var genre = await context.Genres.FirstOrDefaultAsync(g => g.Name == genreName);
                 //insert apikey here
